@@ -16,6 +16,7 @@ int	main(int argc, char **argv)
 			while (std::getline(file, line) && line.length() > 2 && line.compare("\n") != 0)
 				cal += stoi(line);
 			v.push_back(cal);
+			cal = 0;
 			if (file.eof())
 				break;
 		}

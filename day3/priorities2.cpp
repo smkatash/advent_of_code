@@ -7,7 +7,6 @@
 
 int	find_match(std::string v[])
 {
-	int	i;
 	for (int i = 0; v[0][i]; i++)
 	{
 		if (v[1].find(v[0][i]) != -1 &&

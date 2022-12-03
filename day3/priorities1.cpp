@@ -9,7 +9,6 @@ int	find_match(std::string line)
 	int	split = line.length() / 2;
 	std::string	half = line.substr(0, split);
 	int	match = 0;
-
 	for (int i = 0; i < line.length(); i++)
 	{
 		match = half.find(line[split + i]);

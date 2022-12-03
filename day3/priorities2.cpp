@@ -1,25 +1,20 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
-#include <vector>
+#include <array>
 #include <map>
 #include <string>
 
-int	find_match(std::string	*v)
+int	find_match(std::string v[])
 {
-	int	match = 0;
-
-	for (int i = 0; i < v[0].length(); i++)
+	int	i;
+	for (int i = 0; v[0][i]; i++)
 	{
-		match = v[0].find(v[1][i]);
-		if (match != -1)
-		{
-			match = v[2].find(v[1][i]);
-			if (match != -1)
-				break;
-		}
+		if (v[1].find(v[0][i]) != -1 &&
+			v[2].find(v[0][i]) != -1)
+			return v[0][i];
 	}
-	return v[2][match];
+	return 0;
 }
 
 int	main(int argc, char **argv)
@@ -50,5 +45,3 @@ int	main(int argc, char **argv)
 	}
 	return 0;
 }
-
-// Result is 2483 - 2828

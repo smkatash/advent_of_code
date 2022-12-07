@@ -17,15 +17,23 @@ bool isNumber(const string& s)
 }
 
 void	stack_operations(stack<char> *stack, int num, int src, int dst) {
-	char top;
+	char moves[100];
+	int	total = num;
+	int	i = 0;
 
 	while (num) {
 		if (stack[src - 1].empty())
 			break;
-		top = stack[src - 1].top();
+		moves[i] = stack[src - 1].top();
 		stack[src - 1].pop();
-		stack[dst - 1].push(top);
 		num--;
+		i++;
+	}
+	i = 0;
+	while(total)
+	{
+		stack[dst - 1].push(moves[total - 1]);
+		total--;
 	}
 }
 

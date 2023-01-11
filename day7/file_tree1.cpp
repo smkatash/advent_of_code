@@ -2,62 +2,41 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <bits/stdc++.h>
+#include <map>
 using namespace std;
 
-typedef struct node
-{
-	long	size;
-	vector<pair<string, node *>> child;
-} node;
-
-node *new_node(long size)
-{
-	node *temp = new node;
-	temp->size = size;
-	return temp;
+struct dir {
+	dir	*parent;
+	unordered_map<string, dir*> subdir_list;
+	unordered_map<string, size_t> file_list;
 }
 
-enum cmds {
-	ls = 0,
-	cd_ = 1,
-	cd = 2
-};
-
-void	branch(string line, int token, node **root) {
-	int	file_size = 0;
-	if (any_of(line.begin(), line.end(), ::isdigit))
-		file_size = stoi(line.substr(0))
-	if (!line.compare(0, 2,"dir")) {
-		string	dir_name = line.substr(4, line.length());
-		if (*root == nullptr)
-			*root = new_node(dir_name);
-		else
-			((*root)->child).push_back(new_node(dir_name));
-	}
-	else
-		
-
+struct node {
+	dir	root;
+	vector<unique_ptr<dir> filesystem;
 }
+
 
 int	main(long argc, char **argv)
 {
 	ifstream	file(argv[1]);
-	string		line;
-	int			token = -1;
-	node		*root = nullptr;
+	string		line; 
+	dir			files;
 
-	while (file.is_open() && file.good())
-	{
-		getline(file, line);
-		if (!line.compare("$ ls"))
-			token = ls;
-		else if (!line.compare("$ cd .."))
-			token = cd_;
-		else if (!line.compare(0, 3, "$ cd"))
-			token = cd;
-		else
-			branch(line, token, &root);
+	while (file && file.peek() != '$') {
+		if (isdigit(file.peek())) {
+			size_t file;
+			string fname;
+			file >> file >> fname;
+			dir.file_list[fname] = file;
+			skipws(file);
+		} else if (file.compare("dir") == 0)
+			dir dirptr;
+			string dname;
+			dir >> direc >> dname;
+			dir.file_list[dname] = file;
+			skipws(file);
+		}
 	}
 	file.close();
 	return 0;

@@ -7,15 +7,18 @@ using namespace std;
 
 int	scanner(vector<vector<char> > &arr)
 {
-	int	counter = 0;
-	int	top = 1;
-	int	btm = arr.size() - 2;
-
-	for (int i = 1; i <= arr.size(); i++) {
-		if (arr[1]
+	int	dist;
+	for (int i = 0; i < arr.size(); i++) {
+		vector<char>::iterator max_it = max_element(arr[i].begin(), arr[i].end());
+		for (vector<char>::iterator it = arr[i].begin(); it != arr[i].end(); ++it) {
+			if (max_it < it)
+				dist = it - max_it;
+			else
+				dist = max_it - it;
+		}
 	}
-	cout << counter << endl;
-	return counter + (arr.size() - 2) * 4 + 4;
+
+
 }
 
 vector<char> split_line(string const &str) { 

@@ -31,16 +31,17 @@ struct dir {
 		return s;
 	}
 
-	size_t	sum_dirSize() {
-		size_t s = 0;
-		size_t total = 0;
+	size_t	smallest_dirSize(size_t space) {
+		size_t	current = dirSize();
+		size_t	dSize;
+		if (current < space)
+			current = 0;
 		for (dir *d : dirs) {
-			total += d->sum_dirSize();
-			s = d->dirSize();
-			if (s <= 100000)
-				total += s;
+			dSize = d->smallest_dirSize(space);
+			if (dSize != 0 && (current == 0 || dSize < current))
+				current = dSize;
 		}
-		return total;
+		return current;
 	}
 };
 
@@ -85,7 +86,8 @@ int	main(int argc, char **argv)
 		}
 	}
 	input.close();
-	cout << "Result is " << root->sum_dirSize() << endl;
+	size_t	space = 30000000 - (70000000 - root->dirSize());
+	cout << "Result is " << root->smallest_dirSize(space) << endl;
 	free_dir(root);
 	return 0;
 }

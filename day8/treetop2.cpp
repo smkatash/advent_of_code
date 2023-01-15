@@ -16,7 +16,6 @@ int	main(int argc, char **argv)
 	ifstream				file(argv[1]);
 	string					line;
 	vector<vector<char> >	arr;
-	int						sum = 0;
 
 	if (!file.is_open()) {
 		cerr << "Please provide an input file" << endl;
@@ -28,50 +27,52 @@ int	main(int argc, char **argv)
 		arr.push_back(split_line(line));
 	}
 	file.close();
-	bool left, right;
 	int row = arr.size();
 	int col = arr[0].size();
+	int left = 1;
+	int right = 1;
+	int up = 1;
+	int btm = 1;
+	int max = 1;
+	int sum = 0;
+	int	indx = 0;
 	char current = 0;
 	for (int i = 1; i < row - 1; i++) {
 		for (int j = 1; j < col - 1; j++) {
-			left =  true;
-			right =  true;
 			current = arr[i][j];
-			for (int l_col = 0; l_col < j; l_col++) {
-				if (arr[i][l_col] >= current) {
-					left = false;
+			indx = j;
+			while (--indx > 0) {
+				if (arr[i][indx] >= current)
 					break;
-				}
+				left++;
 			}
-			for (int r_col = j + 1; r_col < col; r_col++) {
-				if (arr[i][r_col] >= current) {
-					right = false;
+			indx = j;
+			while (++indx < col) {
+				if (arr[i][indx] >= current || indx == col - 1)
 					break;
-				}
+				right++;
 			}
-			if (left == true || right == true) {
-				sum++;
-				continue;
-			}
-			left = true;
-			right = true;
-			for (int l_row = 0; l_row < i; l_row++) {
-				if (arr[l_row][j] >= current) {
-					left = false;
+			indx = i;
+			while (--indx > 0) {
+				if (arr[indx][j] >= current)
 					break;
-				}
+				up++;
 			}
-			for (int r_row = i + 1; r_row < row; r_row++) {
-				if (arr[r_row][j] >= current) {
-					right = false;
+			indx = i;
+			while (++indx < row) {
+				if (arr[indx][j] >= current || indx == row - 1)
 					break;
-				}
+				btm++;
 			}
-			if (left == true || right == true)
-				sum++;
+			sum = right * left * up * btm;
+			if (sum > max)
+				max = sum;
+			left = 1;
+			right = 1;
+			up = 1;
+			btm = 1;
 		}
 	}
-	sum += 2 * (row + col) - 4;
-	cout << "Result is " << sum << endl;
+	cout << "Result is " << max << endl;
 	return 0;
 }

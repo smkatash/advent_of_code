@@ -11,11 +11,20 @@ vector<char> split_line(string const &str) {
 	return result; 
 }
 
+void	reset(int *left, int *right, int *up, int*btm)
+{
+	*left = 1;
+	*right = 1;
+	*up = 1;
+	*btm = 1;
+}
+
 int	main(int argc, char **argv)
 {
 	ifstream				file(argv[1]);
 	string					line;
 	vector<vector<char> >	arr;
+	int						left, right, up, btm;
 
 	if (!file.is_open()) {
 		cerr << "Please provide an input file" << endl;
@@ -29,11 +38,8 @@ int	main(int argc, char **argv)
 	file.close();
 	int row = arr.size();
 	int col = arr[0].size();
-	int left = 1;
-	int right = 1;
-	int up = 1;
-	int btm = 1;
-	int max = 1;
+	reset(&left, &right, &up, &btm);
+	int max = 0;
 	int sum = 0;
 	int	indx = 0;
 	char current = 0;
@@ -47,8 +53,8 @@ int	main(int argc, char **argv)
 				left++;
 			}
 			indx = j;
-			while (++indx < col) {
-				if (arr[i][indx] >= current || indx == col - 1)
+			while (++indx < col - 1) {
+				if (arr[i][indx] >= current)
 					break;
 				right++;
 			}
@@ -59,18 +65,14 @@ int	main(int argc, char **argv)
 				up++;
 			}
 			indx = i;
-			while (++indx < row) {
-				if (arr[indx][j] >= current || indx == row - 1)
+			while (++indx < row - 1) {
+				if (arr[indx][j] >= current)
 					break;
 				btm++;
 			}
 			sum = right * left * up * btm;
-			if (sum > max)
-				max = sum;
-			left = 1;
-			right = 1;
-			up = 1;
-			btm = 1;
+			max = std::max(sum, max);
+			reset(&left, &right, &up, &btm);
 		}
 	}
 	cout << "Result is " << max << endl;

@@ -19,11 +19,11 @@ int main(int argc, char **argv) {
 
 	memset(map, 0, sizeof(map[0][0]) * 1000 * 1000);
 	map[i][j] = 1;
+	up = false;
+	down = false;
 	while (file.is_open() && file.good())
 	{
 		file >> pos >> num;
-		up = false;
-		down = false;
 		cout << "---"  << pos << " " << num << endl;
 		if (i == 0 && j == 0 && init_pos == false) {
 			init_pos = true;
@@ -38,11 +38,11 @@ int main(int argc, char **argv) {
 		while (num > 0) {
 			if (pos.compare("R") == 0 && j < 100) {
 				map[i][++j] = 1;
-				// cout << "R " << map[i][j] << endl;
+				cout << "R " << map[i][j] << endl;
 			}
 			else if (pos.compare("L") == 0 && j > 0) {
 				map[i][--j] = 1;
-				// cout << "L " << map[i][j] << endl;
+				cout << "L " << map[i][j] << endl;
 			}
 			else if (pos.compare("U") == 0 && i < 100) {
 				if (up == false) {
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
 				else
 					map[++i][j] = 1;
 				prev = 'u';
-				//cout << "U " << map[i][j] << endl;
+				cout << "U " << map[i][j] << endl;
 			}
 			else if (pos.compare("D") == 0 && j < 100) {
 				if (down == false) {
@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 				else
 					map[--i][j] = 1;
 				prev = 'd';
-				//cout << "D " << map[i][j] << endl;
+				cout << "D " << map[i][j] << endl;
 			}
 			num--;
 		}

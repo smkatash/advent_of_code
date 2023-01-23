@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <unordered_set>
+#include <vector>
 using namespace std;
 
 struct point
@@ -16,7 +17,6 @@ struct point
 	}
 	point(const point& other): x_(other.x_), y_(other.y_) {}
 	point add(int x, int y) { x_ += x; y_ += y; return *this; }
-
 };
 
 void	move_head(point* H, std::string const dir) {
@@ -79,15 +79,21 @@ int main(int argc, char **argv) {
 	int y = 0;
 	point	H(0,0);
 	point	T(0,0);
+	vector<point> tails;
 
-	counter.insert(make_pair(x,y));
+	for (int i = 0; i < 9; i++)
+		tails.push_back(T);
+	counter.insert(make_pair(tails[0].x_, tails[0].y_));
 	while (file.is_open() && file.good())
 	{
 		file >> direction >> steps;
 		for (int i = steps; i > 0; i--) {
 			move_head(&H, direction);
-			T = move_tail(T, H);
-			counter.insert(make_pair(T.x_, T.y_));
+			tails[0] = move_tail(tails[0], H);
+			for (int i = 1; i < 9; i++) {
+				tails[i] = move_tail(tails[i], tails[i - 1]);
+			}
+			counter.insert(make_pair(tails[8].x_, tails[8].y_));
 		}
 	}
 	for (auto it = counter.begin(); it != counter.end(); ++it)

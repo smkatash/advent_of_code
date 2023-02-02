@@ -23,19 +23,19 @@ int main(int argc, char **argv) {
 	string		line;
 	const char *str;
 	int			x = 0;
-	Position	end;
-	Position	start = make_pair(0,0);
+	Position	start;
 
 	while (file.is_open() && file.good()) {
 		file >> line;
 		str = line.c_str();
 		for (int y = 0; y < line.length(); y++) {
 			if (str[y] == 'E')
-				end = make_pair(x, y);
+				start = make_pair(x, y);
 			mp[x].push_back(str[y]);
 		}
 		x++;
 	}
+	mp[start.first][start.second] = 'z';
 	queue<Position>	hill;
 	vector<Position> visited;
 	int counter = 0;
@@ -49,16 +49,16 @@ int main(int argc, char **argv) {
 	while (!hill.empty()) {
 		Position current = hill.front();
  		hill.pop();
-		if (current.first == end.first && current.second == end.second) 
+		cout << static_cast<char>(mp[current.first][current.second]) << endl;
+		if (mp[current.first][current.second] == 'a') 
 			break;
-		
 		for (int i = 0; i < 4; i++) {
 			Position next = make_pair(current.first + row[i], current.second + col[i]);
 			if (next.first < 0 || next.second < 0 || next.first >= mp.size() || next.second >= mp[0].size())
 				continue;
 			if (find(visited.begin(), visited.end(), next) != visited.end())
 				continue;
-			if (!valid_elevation(mp[current.first][current.second], mp[next.first][next.second]))
+			if (!valid_elevation(mp[next.first][next.second], mp[current.first][current.second]))
 				continue;
 			hill.push(next);
 			visited.push_back(next);

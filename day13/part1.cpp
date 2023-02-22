@@ -3,7 +3,6 @@
 #include <string>
 #include <cstring>
 #include <sstream>
-#include <vector>
 using namespace std;
 
 int	compare_pair(string pair1, string pair2) {
@@ -25,7 +24,7 @@ int	compare_pair(string pair1, string pair2) {
 				return 1;
 			}
 			else if (first > second) {
-				return 2;
+				return 0;
 			}
 			else {
 				pair1.erase(0, i);
@@ -44,7 +43,7 @@ int	compare_pair(string pair1, string pair2) {
 			return 1;
 		}
 		else if (pair2[j] == ']') {
-			return 2;
+			return 0;
 		}
 		else if (isdigit(pair1[i]) && pair2[j] == '[') {
 			while (isdigit(pair1[i])) {
@@ -68,7 +67,7 @@ int	compare_pair(string pair1, string pair2) {
 	if (pair1.empty())
 		return 1;
 	else if (pair2.empty())
-		return 2;
+		return 0;
 	else
 		return 1;
 }
@@ -85,11 +84,8 @@ int main(int argc, char** argv) {
 		file >> pair1;
 		file >> pair2;
 		min = compare_pair(pair1, pair2);
-		if (min) {
-			if (min == 1) {
-				counter += indx;
-			}
-		}
+		if (min)
+			counter += indx;
 		indx++;
 	}
 	cout << "Result is " << counter << endl;

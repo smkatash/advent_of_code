@@ -4,6 +4,6 @@ services:
   app:
     build: .
     volumes:
-      - C:\Users\ktashbae\Desktop\advent_of_code\2023\day3:/app
+      - C:\Users\ktashbae\Desktop\advent_of_code\2023\day5:/app
     command: tail -f /dev/null
     restart: unless-stopped

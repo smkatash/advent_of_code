@@ -8,6 +8,10 @@ import (
 	"strconv"
 )
 
+type Item struct {
+    dest, src, rangeS int
+}
+
 func min(a, b int) int {
 	if a == 0 {
 		return b
@@ -27,14 +31,14 @@ func convertToNum(str string) int {
 	return num
 }
 
-func mapTheNumbers(line string, currentMap map[int]int) {
+func mapTheNumbers(line string, currentMap *[]Item) {
 	values := strings.Split(line, " ")
-	dest :=  convertToNum(values[0])
-	src := convertToNum(values[1])
-	rangeS := convertToNum(values[2])
-	for i := 0; i < rangeS; i++ {
-		currentMap[src + i] = dest + i
+	item := Item{
+		dest:  convertToNum(values[0]),
+		src:   convertToNum(values[1]),
+		rangeS: convertToNum(values[2]),
 	}
+	*currentMap = append(*currentMap, item)
 }
 
 func getSeeds(line string) []int {
@@ -51,11 +55,17 @@ func getSeeds(line string) []int {
 	return nil
 }
 
-func checkAssignment(num, alt int) int {
-	if num != 0 {
-		return num
+func inRange(x, min, max int) bool {
+    return x >= min && x <= max
+}
+
+func checkAssignment(currentMap []Item, seed int) int {
+	for _, item := range currentMap {
+		if inRange(seed, item.src, item.src + item.rangeS) {
+			return item.dest + (seed - item.src)
+		}
 	}
-	return alt
+	return seed
 }
 
 func main() {
@@ -64,14 +74,14 @@ func main() {
 		log.Fatal(err)
 	}
 	scanner := bufio.NewScanner(file)
-	seedToSoil := make(map[int]int)
-	soilToFert := make(map[int]int)
-	fertToWater := make(map[int]int)
-	waterToLight := make(map[int]int)
-	lightToTemp := make(map[int]int)
-	tempToHumidity := make(map[int]int)
-	humidityToLocation := make(map[int]int)
-	var currentMap map[int]int
+	var seedToSoil []Item
+	var soilToFert []Item
+	var fertToWater []Item
+	var waterToLight []Item
+	var lightToTemp []Item
+	var tempToHumidity []Item
+	var humidityToLocation []Item
+	var currentMap *[]Item
 	var seeds []int
 
 	for scanner.Scan() {
@@ -82,37 +92,36 @@ func main() {
 
 		if strings.Contains(line, "seeds:"){
 			seeds = getSeeds(line)
-			fmt.Println(seeds)
 			continue
 		}
 
 		switch line {
 		case "seed-to-soil map:":
-			currentMap = seedToSoil
+			currentMap = &seedToSoil
 			continue
 		case "soil-to-fertilizer map:":
-			currentMap = soilToFert
+			currentMap = &soilToFert
 			continue
 		case "fertilizer-to-water map:":
-			currentMap = fertToWater
+			currentMap = &fertToWater
 			continue
 		case "water-to-light map:":
-			currentMap = waterToLight
+			currentMap = &waterToLight
 			continue
 		case "light-to-temperature map:":
-			currentMap = lightToTemp
+			currentMap = &lightToTemp
 			continue
 		case "temperature-to-humidity map:":
-			currentMap = tempToHumidity
+			currentMap = &tempToHumidity
 			continue
 		case "humidity-to-location map:":
-			currentMap = humidityToLocation
+			currentMap = &humidityToLocation
 			continue
 		}
 		mapTheNumbers(line, currentMap)
 	}
 	
-	arrayOfMaps := make([]map[int]int, 7)
+	arrayOfMaps := make([][]Item, 7)
 	arrayOfMaps[0] = seedToSoil
     arrayOfMaps[1] = soilToFert
     arrayOfMaps[2] = fertToWater
@@ -124,19 +133,15 @@ func main() {
 	var next int
 	minLocation := 0
 	for x := range seeds {
-		fmt.Println("--------------------")
 		seed := seeds[x]
-		fmt.Println(seed)
 		current = seed
 		for i := 0; i <= 6; i++ {
-			currentMap := arrayOfMaps[i]
-			next = checkAssignment(currentMap[current], current)
-			fmt.Println("Value ", next)
+			next = checkAssignment(arrayOfMaps[i], current)
 			current = next
 		}
 		minLocation = min(minLocation, current)
 	}
 
-	fmt.Println(minLocation)
+	fmt.Println("Result ", minLocation)
 
 }

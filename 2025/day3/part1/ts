@@ -1,0 +1,24 @@
+function isRepeated(str) {
+  const n = str.length;
+
+  // Try every pattern length
+  for (let size = 1; size <= n / 2; size++) {
+    // Only patterns that evenly divide the total length
+    if (n % size !== 0) continue;
+
+    const pattern = str.slice(0, size);
+    let ok = true;
+
+    // Check the whole string in chunks
+    for (let i = size; i < n; i += size) {
+      if (str.slice(i, i + size) !== pattern) {
+        ok = false;
+        break;
+      }
+    }
+
+    if (ok) return true;  // found a repeating pattern
+  }
+
+  return false;
+}

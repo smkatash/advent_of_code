@@ -9,47 +9,32 @@ import (
 	"strings"
 )
 
-type ID struct {
-	firstId int
-	secondId int
-}
+const pick = 12
 
-func isRepeated(id string) bool { 
-	len := len(id) 
-	for i := 1; i <= len; i++ {
-		if len % i != 0 {
-			 continue 
-		} 
-		substr := id[0:i]
-		repeated := true 
-		for j := i; j < len; j += i { 
-			if id[j:j+i] != substr {
-				 repeated = false 
-				 break 
-			} 
+func largestJolt(jolts []string) (int64, error) {
+	n := len(jolts)
+
+	stack := make([]string, 0, pick)
+	for i := 0; i < n; i++ {
+		remaining := n - i
+		for len(stack) > 0 &&
+			stack[len(stack)-1] < jolts[i] &&
+			(len(stack)-1+remaining) >= pick {
+			stack = stack[:len(stack)-1]
 		}
-		if len == i {
-			break 
-		} 
-		if repeated {
-			return true 
-		} 
-	} 
-	return false 
-}
-
-func findRepeatedSequence(ids ID) int {
-	sum := 0
-	for i:= ids.firstId; i <= ids.secondId; i++ {
-		idStr := strconv.Itoa(i)
-		if isRepeated(idStr) {
-			fmt.Println("Found repeated sequence in ID: ", i)
-			sum += i
+		if len(stack) < pick {
+			stack = append(stack, jolts[i])
 		}
 	}
-	return sum
-}
 
+	selection := stack[:pick]
+	s := strings.Join(selection, "")
+	val, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("parse error for %q: %w", s, err)
+	}
+	return val, nil
+}
 
 
 func main() {	
@@ -60,32 +45,12 @@ func main() {
 	}
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
-	ids := []ID{}
 	sum := 0
-	counter := 0
-	var allIdCombinations []string
 	for scanner.Scan() {
 		line := scanner.Text()
-		allIdCombinations = strings.Split(line, ",")
-		for _, combination := range allIdCombinations {
-			idCombination := strings.Split(combination, "-")
-			id := ID{}
-			id.firstId, err = strconv.Atoi(idCombination[0])
-			if err != nil {
-				log.Fatal(err)
-			}
-			id.secondId, err = strconv.Atoi(idCombination[1])
-			if err != nil {
-				log.Fatal(err)
-			}
-			ids = append(ids, id)
-		}
-		for _, id := range ids {
-			counter = findRepeatedSequence(id)
-			//fmt.Println("Combination of first ", id.firstId, " and second ", id.secondId)
-			sum += counter
-			//fmt.Println("Current sum is ", sum)
-		}
+		numbers := strings.Split(line, "")
+		largestJolt, _ := largestJolt(numbers)
+		sum += int(largestJolt)
 	}
 
 	fmt.Println("Sum is ", sum)
